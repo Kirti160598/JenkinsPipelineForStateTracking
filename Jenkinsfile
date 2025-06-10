@@ -18,11 +18,11 @@ pipeline {
         
        stage('Step 2') {
             when {
-                expression { LAST_SUCCESS_STEP != 'Step 3' }
+                expression { LAST_SUCCESS_STEP != 'Step 2' }
             }
             steps {
-                echo 'Executing Step 3'
-                writeFile file: 'last_step.txt', text: 'Step 3'
+                echo 'Executing Step 2'
+                writeFile file: 'last_step.txt', text: 'Step 2'
             }
         }
         
