@@ -11,7 +11,7 @@ pipeline {
                 expression { LAST_SUCCESS_STEP != 'Step 1' }
             }
             steps {
-                echo 'Executing Step 1'
+                echo 'Executing Step 1 print step1'
                 writeFile file: 'last_step.txt', text: 'Step 1'
             }
         }
@@ -21,7 +21,7 @@ pipeline {
                 expression { LAST_SUCCESS_STEP != 'Step 2' }
             }
             steps {
-                echo 'Executing Step 2'
+                echo 'Executing Step 2 print step2'
                 writeFile file: 'last_step.txt', text: 'Step 2'
             }
         }
