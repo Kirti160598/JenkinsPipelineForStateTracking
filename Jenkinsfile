@@ -16,18 +16,13 @@ pipeline {
             }
         }
         
-        stage('Step 2') {
+       stage('Step 2') {
             when {
-                expression { LAST_SUCCESS_STEP != 'Step 2' }
+                expression { LAST_SUCCESS_STEP != 'Step 3' }
             }
             steps {
-                echo 'Executing Step 2'
-                script {
-                    if (sh(script: 'exit 1', returnStatus: true) != 0) {
-                        error('Step 2 Failed!')
-                    }
-                }
-                writeFile file: 'last_step.txt', text: 'Step 2'
+                echo 'Executing Step 3'
+                writeFile file: 'last_step.txt', text: 'Step 3'
             }
         }
         
