@@ -1,45 +1,46 @@
-pipeline {
-    agent any
-
-    stages {
-        stage('Step 1') {
-            when { 
-                expression { fileExists('last_step.txt') && readFile('last_step.txt').trim() != 'Step 1' }
-            }
-            steps {
-                echo 'Executing Step 1 print step1'
-                writeFile file: 'last_step.txt', text: 'Step 1'
-            }
-        }
-
-        stage('Step 2') {
-            when { 
-                expression { fileExists('last_step.txt') && readFile('last_step.txt').trim() != 'Step 2' }
-            }
-            steps {
-                echo 'Executing Step 2 print step2'
-                writeFile file: 'last_step.txt', text: 'Step 2'
-            }
-        }
-
-        stage('Step 3') {
-            when { 
-                expression { fileExists('last_step.txt') && readFile('last_step.txt').trim() != 'Step 3' }
-            }
-            steps {
-                echo 'Executing Step 3'
-                writeFile file: 'last_step.txt', text: 'Step 3'
-            }
-        }
-
-        stage('Step 4') {
-            when { 
-                expression { fileExists('last_step.txt') && readFile('last_step.txt').trim() != 'Step 4' }
-            }
-            steps {
-                echo 'Executing Step 4'
-                writeFile file: 'last_step.txt', text: 'Step 4'
-            }
-        }
+def state = [:]
+if (fileExists('pipeline-state.json')) {
+    state = readJSON file: 'pipeline-state.json'
+} else {
+    state = [step1: "pending", step2: "pending", step3: "pending", step4: "pending"]
+}
+ 
+// STEP 1
+if (state.step1 != "done") {
+    stage('Step 1') {
+        echo "Running Step 1"
+        // do actual work...
+        state.step1 = "done"
+        writeJSON file: 'pipeline-state.json', json: state, pretty: 4
+    }
+}
+ 
+// STEP 2
+if (state.step2 != "done") {
+    stage('Step 2') {
+        echo "Running Step 2"
+        // do actual work...
+        state.step2 = "done"
+        writeJSON file: 'pipeline-state.json', json: state, pretty: 4
+    }
+}
+ 
+// STEP 3
+if (state.step3 != "done") {
+    stage('Step 3') {
+        echo "Running Step 3"
+        // do actual work...
+        state.step3 = "done"
+        writeJSON file: 'pipeline-state.json', json: state, pretty: 4
+    }
+}
+ 
+// STEP 4
+if (state.step4 != "done") {
+    stage('Step 4') {
+        echo "Running Step 4"
+        // do actual work...
+        state.step4 = "done"
+        writeJSON file: 'pipeline-state.json', json: state, pretty: 4
     }
 }
