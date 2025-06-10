@@ -1,6 +1,6 @@
 def state = [:]
-if (fileExists('pipeline-state.json')) {
-    state = readJSON file: 'pipeline-state.json'
+if (fileExists('./pipeline-state.json')) {
+    state = readJSON file: './pipeline-state.json'
 } else {
     state = [step1: "pending", step2: "pending", step3: "pending", step4: "pending"]
 }
