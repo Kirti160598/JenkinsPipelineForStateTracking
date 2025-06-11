@@ -1,46 +1,66 @@
-def state = [:]
-if (fileExists('pipeline-state.json')) {
-    state = readJSON file: 'pipeline-state.json'
-} else {
-    state = [step1: "pending", step2: "pending", step3: "pending", step4: "pending"]
-}
- 
-// STEP 1
-if (state.step1 != "done") {
-    stage('Step 1') {
-        echo "Running Step 1"
-        // do actual work...
-        state.step1 = "done"
-        writeJSON file: 'pipeline-state.json', json: state, pretty: 4
-    }
-}
- 
-// STEP 2
-if (state.step2 != "done") {
-    stage('Step 2') {
-        echo "Running Step 2"
-        // do actual work...
-        state.step2 = "done"
-        writeJSON file: 'pipeline-state.json', json: state, pretty: 4
-    }
-}
- 
-// STEP 3
-if (state.step3 != "done") {
-    stage('Step 3') {
-        echo "Running Step 3"
-        // do actual work...
-        state.step3 = "done"
-        writeJSON file: 'pipeline-state.json', json: state, pretty: 4
-    }
-}
- 
-// STEP 4
-if (state.step4 != "done") {
-    stage('Step 4') {
-        echo "Running Step 4"
-        // do actual work...
-        state.step4 = "done"
-        writeJSON file: 'pipeline-state.json', json: state, pretty: 4
+pipeline {
+    agent any
+    stages {
+        stage('Build') {
+            when {
+                expression {
+                    // Run only if state is missing or before 'build'
+                    !fileExists('pipeline_state.txt') ||
+                    readFile('pipeline_state.txt').trim() == 'start'
+                }
+            }
+            steps {
+                script {
+                    echo "Running Build Stage..."
+                    // Simulate work
+                    sh 'echo build > output.txt'
+                    // Save state
+                    writeFile file: 'pipeline_state.txt', text: 'build'
+                }
+            }
+        }
+
+        stage('Test') {
+            when {
+                expression {
+                    fileExists('pipeline_state.txt') &&
+                    readFile('pipeline_state.txt').trim() == 'build'
+                }
+            }
+            steps {
+                script {
+                    echo "Running Test Stage..."
+                    sh 'cat output.txt'
+                    writeFile file: 'pipeline_state.txt', text: 'test'
+                }
+            }
+        }
+
+        stage('Deploy') {
+            when {
+                expression {
+                    fileExists('pipeline_state.txt') &&
+                    readFile('pipeline_state.txt').trim() == 'test'
+                }
+            }
+            steps {
+                script {
+                    echo "Running Deploy Stage..."
+                    writeFile file: 'pipeline_state.txt', text: 'done'
+                }
+            }
+        }
+
+        stage('Done') {
+            when {
+                expression {
+                    fileExists('pipeline_state.txt') &&
+                    readFile('pipeline_state.txt').trim() == 'done'
+                }
+            }
+            steps {
+                echo "Pipeline already completed."
+            }
+        }
     }
 }
